@@ -1,0 +1,48 @@
+USE ROLE ACCOUNTADMIN;
+USE WAREHOUSE COMPUTE_WH;
+USE SCHEMA CRICKET.RAW_LAYER;
+
+--Create a transient table inside the raw layer
+CREATE OR REPLACE TRANSIENT TABLE CRICKET.RAW_LAYER.MATCH_RAW_TABLE (
+ META OBJECT NOT NULL,
+ INFO VARIANT NOT NULL,
+ INNINGS ARRAY NOT NULL,
+ STG_FILE_NAME TEXT NOT NULL,
+ STG_FILE_ROW_NUMBER INT NOT NULL,
+ STG_FILE_HASHKEY TEXT NOT NULL,
+ STG_MODIFIED_TS  TIMESTAMP NOT NULL
+ )
+Comment='This is raw table to store all the JSON data file with root elements extracted'
+
+--Use Copy Command to load the data into table from internal stage 
+ 
+ copy into CRICKET.RAW_LAYER.MATCH_RAW_TABLE from
+    (
+      select 
+            t.$1:meta::object  as meta,
+            t.$1:info::variant as info,
+            t.$1:innings::array as innings,
+
+            --
+            metadata$filename,
+            metadata$file_row_number,
+            metadata$file_content_key,
+            metadata$file_last_modified
+     from @CRICKET.LANDING_LAYER.INTERNAL_STAGE (file_format =>'CRICKET.LANDING_LAYER.JSON_FILE_FORMAT') t
+            
+    )
+    on_error=continue;
+
+    select * from CRICKET.RAW_LAYER.MATCH_RAW_TABLE;
+    select count(*) from CRICKET.RAW_LAYER.MATCH_RAW_TABLE;
+    select  * from CRICKET.RAW_LAYER.MATCH_RAW_TABLE LIMIT 10;
+    
+    
+
+ 
+ 
+
+
+
+
+

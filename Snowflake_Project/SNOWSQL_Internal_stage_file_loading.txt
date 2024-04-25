@@ -1,0 +1,120 @@
+C:\Users\Admin>snowsql -a po00341.us-east-2.aws
+User: PRATIKSHA
+Password:
+* SnowSQL * v1.2.32
+Type SQL statements or !help
+PRATIKSHA#COMPUTE_WH@(no database).(no schema)>USE DATABASE CRICKET;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+1 Row(s) produced. Time Elapsed: 0.453s
+PRATIKSHA#COMPUTE_WH@CRICKET.PUBLIC>USE SCHEMA LANDING_LAYER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+1 Row(s) produced. Time Elapsed: 2.781s
+PRATIKSHA#COMPUTE_WH@CRICKET.LANDING_LAYER>USE WAREHOUSE COMPUTE_WH;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+1 Row(s) produced. Time Elapsed: 0.344s
+PRATIKSHA#COMPUTE_WH@CRICKET.LANDING_LAYER>USE ROLE ACCOUNTADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+1 Row(s) produced. Time Elapsed: 0.344s
+PRATIKSHA#COMPUTE_WH@CRICKET.LANDING_LAYER>PUT file:///C:/Users/Admin/Desktop/SNOWFLAKE/Snowflake_Project/DATASET/world_cup_json_files/* @INTERNAL_STAGE;
++--------------+-----------------+-------------+-------------+--------------------+--------------------+----------+---------+
+| source       | target          | source_size | target_size | source_compression | target_compression | status   | message |
+|--------------+-----------------+-------------+-------------+--------------------+--------------------+----------+---------|
+| 1384401.json | 1384401.json.gz |      169863 |        4720 | NONE               | GZIP               | UPLOADED |         |
+| 1384402.json | 1384402.json.gz |      177754 |        4576 | NONE               | GZIP               | UPLOADED |         |
+| 1384403.json | 1384403.json.gz |      135705 |        3872 | NONE               | GZIP               | UPLOADED |         |
+| 1384404.json | 1384404.json.gz |      173618 |        4992 | NONE               | GZIP               | UPLOADED |         |
+| 1384405.json | 1384405.json.gz |      148899 |        4288 | NONE               | GZIP               | UPLOADED |         |
+| 1384406.json | 1384406.json.gz |      166371 |        4704 | NONE               | GZIP               | UPLOADED |         |
+| 1384407.json | 1384407.json.gz |      160777 |        4496 | NONE               | GZIP               | UPLOADED |         |
+| 1384408.json | 1384408.json.gz |      169443 |        4448 | NONE               | GZIP               | UPLOADED |         |
+| 1384409.json | 1384409.json.gz |      185410 |        5136 | NONE               | GZIP               | UPLOADED |         |
+| 1384410.json | 1384410.json.gz |      191397 |        4960 | NONE               | GZIP               | UPLOADED |         |
+| 1384411.json | 1384411.json.gz |      139228 |        4496 | NONE               | GZIP               | UPLOADED |         |
+| 1384412.json | 1384412.json.gz |      180989 |        4800 | NONE               | GZIP               | UPLOADED |         |
+| 1384413.json | 1384413.json.gz |      190248 |        4768 | NONE               | GZIP               | UPLOADED |         |
+| 1384414.json | 1384414.json.gz |      184472 |        4832 | NONE               | GZIP               | UPLOADED |         |
+| 1384415.json | 1384415.json.gz |      138599 |        4208 | NONE               | GZIP               | UPLOADED |         |
+| 1384416.json | 1384416.json.gz |      112265 |        3632 | NONE               | GZIP               | UPLOADED |         |
+| 1384417.json | 1384417.json.gz |      183203 |        5216 | NONE               | GZIP               | UPLOADED |         |
+| 1384418.json | 1384418.json.gz |      186920 |        5136 | NONE               | GZIP               | UPLOADED |         |
+| 1384419.json | 1384419.json.gz |      177987 |        4800 | NONE               | GZIP               | UPLOADED |         |
+| 1384420.json | 1384420.json.gz |      156694 |        4384 | NONE               | GZIP               | UPLOADED |         |
+| 1384421.json | 1384421.json.gz |      181265 |        4752 | NONE               | GZIP               | UPLOADED |         |
+| 1384422.json | 1384422.json.gz |      148893 |        4256 | NONE               | GZIP               | UPLOADED |         |
+| 1384423.json | 1384423.json.gz |      160103 |        4432 | NONE               | GZIP               | UPLOADED |         |
+| 1384424.json | 1384424.json.gz |      135074 |        4128 | NONE               | GZIP               | UPLOADED |         |
+| 1384425.json | 1384425.json.gz |      154775 |        4304 | NONE               | GZIP               | UPLOADED |         |
+| 1384426.json | 1384426.json.gz |      143107 |        3968 | NONE               | GZIP               | UPLOADED |         |
+| 1384427.json | 1384427.json.gz |      181268 |        4880 | NONE               | GZIP               | UPLOADED |         |
+| 1384428.json | 1384428.json.gz |      146151 |        4208 | NONE               | GZIP               | UPLOADED |         |
+| 1384429.json | 1384429.json.gz |      176243 |        4816 | NONE               | GZIP               | UPLOADED |         |
+| 1384430.json | 1384430.json.gz |      183297 |        4736 | NONE               | GZIP               | UPLOADED |         |
+| 1384431.json | 1384431.json.gz |      166621 |        4592 | NONE               | GZIP               | UPLOADED |         |
+| 1384432.json | 1384432.json.gz |      132212 |        3968 | NONE               | GZIP               | UPLOADED |         |
+| 1384433.json | 1384433.json.gz |      187415 |        4864 | NONE               | GZIP               | UPLOADED |         |
++--------------+-----------------+-------------+-------------+--------------------+--------------------+----------+---------+
+33 Row(s) produced. Time Elapsed: 18.733s
+PRATIKSHA#COMPUTE_WH@CRICKET.LANDING_LAYER>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

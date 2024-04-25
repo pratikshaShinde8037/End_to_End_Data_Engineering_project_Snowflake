@@ -1,0 +1,143 @@
+USE ROLE ACCOUNTADMIN;
+USE WAREHOUSE COMPUTE_WH;
+USE DATABASE CRICKET;
+USE SCHEMA CRICKET.CLEANSING_LAYER;
+
+--Extract players version-1
+SELECT 
+raw.info:match_type_number::int as match_type_number,
+raw.info:players,
+raw.info:teams
+from cricket.raw_layer.match_raw_table raw;
+
+--version-2
+select
+raw.info:match_type_number::int as match_type_number,
+raw.info:players,
+raw.info:teams
+from cricket.raw_layer.match_raw_table raw
+where match_type_number=4670;
+
+--version 3.1
+select 
+info:match_type_number::int as match_type_number,
+p.*
+from cricket.raw_layer.match_raw_table,
+lateral flatten( input => info:players) p
+where match_type_number=4670;
+
+--version 3.2
+select 
+info:match_type_number::int as match_type_number,
+--p.*
+p.key::text as country
+from cricket.raw_layer.match_raw_table,
+lateral flatten( input => info:players) p
+where match_type_number=4670;
+
+--Version 4.1
+select 
+raw.info:match_type_number::int as match_type_number,
+p.key::text as country,
+team.*,
+from cricket.raw_layer.match_raw_table raw,
+lateral flatten (input => raw.info:players) p,
+lateral flatten (input => p.value) team,
+where match_type_number=4670;
+
+--version 4.2
+select 
+raw.info:match_type_number::int as match_type_number,
+p.key::text as country,
+team.value::text as player_name,
+from cricket.raw_layer.match_raw_table raw,
+lateral flatten (input => raw.info:players) p,
+lateral flatten (input => p.value) team,
+where match_type_number=4670;
+
+--version 5-Create table player
+create or replace table cricket.cleansing_layer.Player_clean_table as
+select
+raw.info:match_type_number::int as match_type_number,
+p.key::text as Country,
+team.value::text as Player_name,
+raw.stg_file_name,
+raw.stg_file_row_number,
+raw.stg_file_hashkey,
+raw.stg_modified_ts
+from cricket.raw_layer.match_raw_table raw,
+lateral flatten (input => raw.info:players) p,
+lateral flatten (input => p.value) team;
+
+
+select * from cricket.cleansing_layer.player_clean_table;
+select distinct * from cricket.cleansing_layer.player_clean_table;
+
+desc table cricket.cleansing_layer.player_clean_table;
+
+//Set Not Null constraint on columns.
+
+alter table cricket.cleansing_layer.player_clean_table
+modify column match_type_number set not null;
+
+alter table cricket.cleansing_layer.player_clean_table
+modify column Country set not null;
+
+alter table cricket.cleansing_layer.player_clean_table
+modify column Player_name set not null;
+
+//Set primary key on match_type_number in match_detail_clean Column.
+
+alter table cricket.cleansing_layer.match_detail_clean
+add constraint pk_match_type_number primary key(match_type_number);
+
+//set foreign key relationship on match_type_number in player_clean_table
+
+alter table cricket.cleansing_layer.player_clean_table
+add constraint fk_match_id
+foreign key (match_type_number)
+references cricket.cleansing_layer.match_detail_clean (match_type_number);
+
+--desc table cricket.cleansing_layer.player_clean_table-foreign key  constraints not displaying by desc command, for this we have to use get ddl statement
+
+select get_ddl('table','cricket.cleansing_layer.player_clean_table');
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+

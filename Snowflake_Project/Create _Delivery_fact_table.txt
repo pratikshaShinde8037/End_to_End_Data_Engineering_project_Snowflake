@@ -1,0 +1,131 @@
+USE ROLE ACCOUNTADMIN;
+USE WAREHOUSE COMPUTE_WH;
+USE DATABASE CRICKET;
+USE SCHEMA CRICKET.CONSUMPTION_LAYER;
+
+----v1------------
+select * from cricket.cleansing_layer.delivery_clean_table;
+--------V2-----------
+select 
+d.match_type_number as match_id,
+td.team_id,
+td.team_name
+from 
+cricket.cleansing_layer.delivery_clean_table d
+join  cricket.consumption_layer.team_dim td 
+on d.country=td.team_name;
+
+----------v3----------------
+select 
+d.match_type_number as match_id,
+ td.team_id,
+td.team_name,
+bpd.player_id as bowler_id,
+bpd.player_name,
+spd.player_id as batter_id,
+spd.player_name,
+nspd.player_id as non_striker_id,
+nspd.player_name
+from 
+cricket.cleansing_layer.delivery_clean_table d
+join  cricket.consumption_layer.team_dim td on d.country= td.team_name
+join player_dim bpd on d.bowler=bpd.player_name
+join player_dim spd on d.batter=spd.player_name
+join player_dim nspd on d.non_striker=nspd.player_name;
+
+--------------v4---------
+select 
+d.match_type_number as match_id,
+ td.team_id,
+td.team_name,
+bpd.player_id as bowler_id,
+bpd.player_name as bowler,
+spd.player_id as batter_id,
+spd.player_name as stricker,
+nspd.player_id as non_striker_id,
+nspd.player_name as non_stricker,
+d.over,
+d.runs,
+d.extra_runs,
+d.extra_type
+from 
+cricket.cleansing_layer.delivery_clean_table d
+join  cricket.consumption_layer.team_dim td on d.country= td.team_name
+join player_dim bpd on d.bowler=bpd.player_name
+join player_dim spd on d.batter=spd.player_name
+join player_dim nspd on d.non_striker=nspd.player_name;
+
+
+----------V5 remove unwanted columns-------------
+select 
+d.match_type_number as match_id,
+ td.team_id,
+bpd.player_id as bowler_id,
+spd.player_id as batter_id,
+nspd.player_id as non_striker_id,
+d.over,
+d.runs,
+case when d.extra_runs is null then 0 else d.extra_runs end as extra_runs,
+case when d.extra_type is null then'None' else d.extra_type end as extra_type,
+case when d.player_out is null then 'None' else d.player_out end as player_out,
+case when d.player_out_kind is null then 'None'else d.player_out_kind end as player_out_kind
+from 
+cricket.cleansing_layer.delivery_clean_table d
+join  cricket.consumption_layer.team_dim td on d.country= td.team_name
+join player_dim bpd on d.bowler=bpd.player_name
+join player_dim spd on d.batter=spd.player_name
+join player_dim nspd on d.non_striker=nspd.player_name;
+
+-----------v6 create deivery fact table----------------------------
+
+create or replace table delivery_fact (
+match_id int,
+team_id int,
+bowler_id int,
+batter_id int,
+non_stricker_id int,
+over int,
+runs int,
+extra_runs int,
+extra_type varchar(255),
+player_out varchar(255),
+player_out_kind varchar(255),
+
+constraint fk_del_match_id  foreign key (match_id) references match_fact (match_id),
+constraint fk_del_team foreign key (team_id) references  team_dim (team_id),
+constraint fk_bowler foreign key(bowler_id) references player_dim (player_id),
+constraint fk_batter foreign key(batter_id)references player_dim (player_id),
+constraint fk_non_stricker foreign key (non_stricker_id) references player_dim (player_id)
+
+);
+
+-------v7------insert the records
+
+insert into cricket.consumption_layer.delivery_fact
+select 
+d.match_type_number as match_id,
+ td.team_id,
+bpd.player_id as bowler_id,
+spd.player_id as batter_id,
+nspd.player_id as non_striker_id,
+d.over,
+d.runs,
+case when d.extra_runs is null then 0 else d.extra_runs end as extra_runs,
+case when d.extra_type is null then'None' else d.extra_type end as extra_type,
+case when d.player_out is null then 'None' else d.player_out end as player_out,
+case when d.player_out_kind is null then 'None'else d.player_out_kind end as player_out_kind
+from 
+cricket.cleansing_layer.delivery_clean_table d
+join  cricket.consumption_layer.team_dim td on d.country= td.team_name
+join player_dim bpd on d.bowler=bpd.player_name
+join player_dim spd on d.batter=spd.player_name
+join player_dim nspd on d.non_striker=nspd.player_name;
+
+
+
+
+
+
+
+
+

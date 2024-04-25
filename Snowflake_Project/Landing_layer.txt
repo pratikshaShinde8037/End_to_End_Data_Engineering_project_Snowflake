@@ -1,0 +1,51 @@
+--Select Role and Warehouse
+
+USE ROLE ACCOUNTADMIN;
+USE warehouse COMPUTE_WH;
+
+--Creating Database and Schema
+CREATE DATABASE IF NOT EXISTS Cricket;
+CREATE OR REPLACE SCHEMA CRICKET.LANDING_LAYER;
+CREATE OR REPLACE SCHEMA CRICKET.RAW_LAYER;
+CREATE OR REPLACE SCHEMA CRICKET.CLEANSING_LAYER;
+CREATE OR REPLACE SCHEMA CRICKET.CONSUMPTION_LAYER
+
+show schemas in database cricket;
+
+--change context
+USE SCHEMA CRICKET.LANDING_LAYER;
+
+--JSON FILE FORMAT
+CREATE OR REPLACE FILE FORMAT CRICKET.LANDING_LAYER.JSON_FILE_FORMAT
+type=json
+null_if =('\\n' ,'null','')
+strip_outer_array=true
+comment='JSON File Format with outer strip array flag true';
+
+--null_if =('\\n' ,'null','')-This line specifies what values should be interpreted as null when reading data. In this case, if the value in the JSON file is '\n', 'null', or an empty string (''), it will be interpreted as null.
+
+--strip_outer_array=true-This parameter is useful when your JSON data is encapsulated in an array, but you want to treat each object within the array as an individual record.
+
+--Creating an internal stage 
+CREATE OR REPLACE STAGE  CRICKET.LANDING_LAYER.INTERNAL_STAGE;
+
+--List the internal stage
+LIST @CRICKET.LANDING_LAYER.INTERNAL_STAGE;
+
+--Check if data is being loaded or not
+LIST @CRICKET.LANDING_LAYER.INTERNAL_STAGE;
+
+--quick check if data is coming correctly or not
+
+select 
+        t.$1:meta::variant as meta, 
+        t.$1:info::variant as info, 
+        t.$1:innings::array as innings, 
+        metadata$filename as file_name,
+        metadata$file_row_number  int,
+        metadata$file_content_key text,
+        metadata$file_last_modified  stg_modified_ts
+     from @internal_stage/CRICKET/JSON/1384401.json (file_format => 'JSON_FILE_FORMAT') t;
+
+
+

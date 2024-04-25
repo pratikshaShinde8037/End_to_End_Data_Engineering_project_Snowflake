@@ -1,0 +1,38 @@
+USE ROLE ACCOUNTADMIN;
+USE WAREHOUSE COMPUTE_WH;
+USE DATABASE CRICKET;
+USE SCHEMA CLEANSING_LAYER;
+
+--Quickly validate the data set
+select * from cricket.cleansing_layer.match_detail_clean;
+select * from cricket.cleansing_layer.match_detail_clean
+where match_type_number=4686;
+
+select * from cricket.cleansing_layer.delivery_clean_table;
+
+--by batsman
+select 
+country,
+batter,
+sum(runs)
+from delivery_clean_table
+where match_type_number=4686
+group by country,batter
+order by 1,2,3 desc;
+
+-- by team
+select 
+country,
+sum(runs)+sum(extra_runs)
+from delivery_clean_table
+where match_type_number=4686
+group by country
+order by 1,2 desc;
+
+https://www.google.com/search?q=englad+india+match+result+of+2023+ODI+Match&sca_esv=ddd81285843a68ee&rlz=1C1GCEA_enIN1096IN1096&ei=MaIoZonvJq6Zvr0PrYaVqAQ&ved=0ahUKEwjJy4enmNqFAxWujK8BHS1DBUUQ4dUDCBA&uact=5&oq=englad+india+match+result+of+2023+ODI+Match&gs_lp=Egxnd3Mtd2l6LXNlcnAiK2VuZ2xhZCBpbmRpYSBtYXRjaCByZXN1bHQgb2YgMjAyMyBPREkgTWF0Y2gyBxAhGKABGAoyBxAhGKABGApIvSxQnwJYmiZwAXgBkAEAmAHOAaAB8g2qAQUwLjguMrgBA8gBAPgBAZgCC6ACsw7CAgoQABiwAxjWBBhHwgIGEAAYFhgewgILEAAYgAQYhgMYigWYAwDiAwUSATEgQIgGAZAGCJIHBTEuOC4yoAfTLA&sclient=gws-wiz-serp#sie=m;/g/11v13fbw_n;5;/m/021vk;dt;fp;1;;;
+
+
+
+
+
+S
